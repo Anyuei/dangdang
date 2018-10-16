@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 用于操作ProductDao的sql语句映射 -->
+<mapper namespace="dangdang.dao.ProductDao">
+
+	<cache></cache>
+	<!-- 根据商品id查询商品信息 映射关系 -->
+	<resultMap type="dangdang.beans.Product" id="productMap">
+		<id column="pId" property="pId"/>
+		<result column="pName" property="pName"/>
+		<result column="pDetials" property="pDetials"/>
+		<result column="sales" property="sales"/>
+		<result column="price" property="price"/>
+		
+		<collection property="imgPaths" ofType="dangdang.beans.ImgPath">
+			<result column="img_id" property="imgPath_Id"/>
+			<result column="path" property="imgPath"/>
+		</collection>
+	</resultMap>
+	<!-- 根据 商品 或 用户id查询商品评论 映射关系 -->
+	<resultMap type="dangdang.beans.DangComments" id="productCommentMap">
+	
+		<result column="commentId1" property="commentId"/>
+		
+		<collection property="comments" ofType="dangdang.beans.Comment">
+			<result column="cpId" property="pId"/>
+			<result column="cuid" property="uId"/>
+			<result column="dcomment" property="comment"/>
+			<result column="commentTime" property="commentTime"/>
+		</collection>
+		
+	</resultMap>
+	
+	<!-- 根据商品id查询商品信息 -->
+	<select id="queryById" resultMap="productMap">
+		select 
+		id as pId,name as pName,detials as pDetials,sales,price,
+		img_id,img_path as path
+		from dangproduct dp 
+		left join
+		product_imgPath pip on dp.id=pip.img_id
+		where dp.id=#{id}
+	</select>
+	<!-- 根据商品id查询商品评论 -->
+	<select id="queryCommentByPId" resultMap="productCommentMap">
+		select 
+		comment_pid as commentId1,
+		comment_pid as cpId,
+		Comment_Uid as cuid,
+		dcomment as dcomment,
+		dcomment_Time as commentTime
+		from 
+		dangComment
+		where comment_pid=#{cid}
+	</select>
+	<!-- 根据用户id查询商品评论 -->
+	<select id="queryCommentByUId" resultMap="productCommentMap">
+		select 
+		Comment_Uid as commentId1,
+		comment_pid as cpId,
+		Comment_Uid as cuid,
+		dcomment as dcomment,
+		dcomment_Time as commentTime
+		from 
+		dangComment
+		where Comment_Uid=#{id}
+	</select>
+	
+</mapper>
