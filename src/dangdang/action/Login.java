@@ -1,24 +1,16 @@
 package dangdang.action;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.apache.struts2.ServletActionContext;
-
-import com.YunGrocer.javabeans.YGUser;
-import com.YunGrocer.service.UserServiceImpl;
 import com.google.code.kaptcha.Constants;
-import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
-
+import dangdang.beans.User;
+import dangdang.serviceImpl.UserServiceImpl;
 import dangdang.utils.MD5Utils;
 
 /**
@@ -43,7 +35,7 @@ public class Login extends ActionSupport {
 			System.out.println(kaptcha);
 			encryptpassword = new MD5Utils().getStringMD5(password);
 			// 调用service层login方法
-			YGUser user = new UserServiceImpl().login(username, encryptpassword);
+			User user = new UserServiceImpl().login(username, encryptpassword);
 			System.out.println(user);
 			// 判断用户名密码是否正确，或验证码是否正确
 			if (user == null || !session.getAttribute(Constants.KAPTCHA_SESSION_KEY).equals(kaptcha)) {

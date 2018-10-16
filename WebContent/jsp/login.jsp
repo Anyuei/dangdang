@@ -42,7 +42,7 @@
 
 	<body background="">
 		<div class="container">
-		<!--copyright pei  -->
+		<!--copyright anyunpei  -->
 		<!-- 登录头部 -->
 		<div class="head">
 			<a href="">
@@ -59,8 +59,9 @@
 				<div class="span5 offsetHalf block" style="padding: 40px 30px 40px 30px; height: auto;">
 					<div class="row">
 						<!--广告页面-->
-						<div class="col-md-8">
-							<a href=""></a><img src="${pageContext.request.contextPath}/images/loginMain.jpg" style="width: 100%;"/>
+						<div class="col-md-8" style=" position:relative; ">
+							<img src="${pageContext.request.contextPath}/images/一书一世界.png" style="margin-top: 25%;margin-left: 20%;position:absolute;width: 100%;"/>
+							<a href=""></a><img src="${pageContext.request.contextPath}/images/loginMain.jpg" style="width: 100%;border-radius: 20px 200px 20px 200px;"/>
 						</div>
 						<!--登录框-->
 						<div class="col-md-4" style=" margin-top: 50px; ">
@@ -86,10 +87,13 @@
 						</div>
 					</div>
 				</div>
+				
+				
 			</div>
+			<!-- 网站尾部 -->
+			<%@include file="/jsp/footer.jsp" %>
 		</div>
-		<!-- 网站尾部 -->
-		<%@include file="/jsp/footer.jsp" %>
+		
 	</body>
 
 </html>

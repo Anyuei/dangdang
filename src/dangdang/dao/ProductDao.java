@@ -9,8 +9,6 @@ import dangdang.beans.Product;
 
 public interface ProductDao {
 	Product queryById(@Param("id")String id);
-	//用于评论分页
-	Integer queryByIdCounts(@Param("id")String id);
 	/**
 	 * 根据商品id查询商品评论
 	 * @param id

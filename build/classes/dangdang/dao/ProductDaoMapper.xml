@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!-- 用于操作ProductDao的sql语句映射 -->
 <mapper namespace="dangdang.dao.ProductDao">
@@ -28,9 +28,63 @@
 			<result column="dcomment" property="comment"/>
 			<result column="commentTime" property="commentTime"/>
 		</collection>
-		
 	</resultMap>
-	
+		<!-- 根据价格区间 查询某商品 -->
+	<select id="queryByPriceRange" resultMap="productMap">
+		<!-- 商品详情 -->
+		select id as pId,name as pName,detials as pDetials,sales,price,
+		<!-- 商品图片 -->
+		img_id,img_path as path
+		<!-- 添加rownum列 -->
+		from (select sp.*,rownum rn from 
+		<!-- 商品信息表与商品图片表连接 -->
+			(select * from dangproduct dp left join
+			<!-- 以id连接，图片id外键于商品id -->
+			product_imgPath pip on dp.id=pip.img_id
+			<trim prefix ="where" prefixOverrides="and">
+			<!-- 查询所有 -->
+				<if test="lowPrice==null and highPrice==null">
+					name like '%'||#{productName}||'%')sp) 
+				</if>
+				<!-- 查询低于某价格的 -->
+				<if test="lowPrice==null and highPrice!=null">
+					name like '%'||#{productName}||'%' and price&lt;=#{highPrice})sp)
+				</if>
+				<!-- 查询在价格在某个区间内的 -->
+				<if test="lowPrice!=null and highPrice!=null">
+					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice} and price&lt;=#{highPrice})sp)
+				</if>
+				<!-- 查询价格高于多少的 -->
+				<if test="lowPrice!=null and highPrice==null">
+					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice})sp)
+				</if>
+			</trim>
+			WHERE rn&gt;=#{begin} and rn&lt;=#{end} 
+	</select>
+	<!-- 根据价格区间 查询某商品 的数量-->
+	<select id="queryByPriceRangeCount" resultType="java.lang.Integer">
+	<!-- max（rownum可获得结果集中最大的一行 也就得出结果集的数量） -->
+		select max(rownum) from dangproduct
+			<trim prefix ="where" prefixOverrides="and">
+			<!-- 查询所有 -->
+				<if test="lowPrice==null and highPrice==null">
+					name like '%'||#{productName}||'%'
+				</if>
+				<!-- 查询低于某价格的 -->
+				<if test="lowPrice==null and highPrice!=null">
+					name like '%'||#{productName}||'%' and price&lt;=#{highPrice}
+				</if>
+				<!-- 查询在价格在某个区间内的 -->
+				<if test="lowPrice!=null and highPrice!=null">
+					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice} and price&lt;=#{highPrice}
+				</if>
+				<!-- 查询价格高于多少的 -->
+				<if test="lowPrice!=null and highPrice==null">
+					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice}
+				</if>
+			</trim>
+			
+	</select>
 	<!-- 根据商品id查询商品信息 -->
 	<select id="queryById" resultMap="productMap">
 		select 
@@ -65,5 +119,4 @@
 		dangComment
 		where Comment_Uid=#{id}
 	</select>
-	
 </mapper>

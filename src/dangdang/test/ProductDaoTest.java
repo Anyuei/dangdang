@@ -1,5 +1,7 @@
 package dangdang.test;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import dangdang.beans.DangComments;
 import dangdang.beans.Product;
@@ -17,22 +19,34 @@ public class ProductDaoTest {
 	//根据id查询产品 
 	
 	@Test
-	public void queryById() {
+	public void queryById() {//2018年10月16日测试通过
 		ProductDao dao=MybatisUtil.getMapper(ProductDao.class);
 		Product product=dao.queryById("22");
 		System.out.println(product);
 	}
 	//根据产品id查询产品评论
 	@Test
-	public void queryCommentByPId() {
+	public void queryCommentByPId() {//2018年10月16日测试通过
 		ProductDao dao=MybatisUtil.getMapper(ProductDao.class);
 		DangComments comment=dao.queryCommentByPId("22");
 		System.out.println(comment);
 	}
 	@Test
-	public void queryCommentByUId() {
+	public void queryCommentByUId() {//2018年10月16日测试通过
 		ProductDao dao=MybatisUtil.getMapper(ProductDao.class);
 		DangComments comment=dao.queryCommentByUId("100000001");
 		System.out.println(comment);
+	}
+	@Test
+	public void queryByPriceRange() {//2018年10月16日测试通过
+		ProductDao dao=MybatisUtil.getMapper(ProductDao.class);
+		List<Product> products=dao.queryByPriceRange("生",null,null,1,4);
+		System.out.println(products);
+	}
+	@Test
+	public void queryByPriceRangeCount() {//2018年10月16日测试通过
+		ProductDao dao=MybatisUtil.getMapper(ProductDao.class);
+		Integer counts=dao.queryByPriceRangeCount("我喜欢",null,null);
+		System.out.println(counts);
 	}
 }
