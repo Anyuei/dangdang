@@ -1,0 +1,37 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 用于操作ProductDao的sql语句映射 -->
+<mapper namespace="dangdang.dao.CategoryDao">
+	
+	<resultMap type="dangdang.beans.Category" id="CategoryMap">
+		<result column="fid" property="categoryID"/>
+		<result column="fname" property="categoryName"/>
+		<result column="ff" property="father_categorieID"/>
+		<collection property="child_categories" ofType="dangdang.beans.Category">
+			<result column="cid" property="categoryID"/>
+			<result column="cname" property="categoryName"/>
+			<result column="cf" property="father_categorieID"/>
+		</collection>
+	</resultMap>
+	<select id="queryCategoryById" resultMap="CategoryMap">
+		select 
+		c1.category_id as fid,
+		c1.category_father as ff,
+		c1.category_name as fname,
+		c2.category_id as cid,
+		c2.category_father as cf,
+		c2.category_name as cname
+		from category c1 left join category c2 on c1.category_id=c2.category_father 
+		where c1.category_id=#{category_id}
+	</select>
+	<select id="queryAllCategory" resultMap="CategoryMap">
+		select 
+		c1.category_id as fid,
+		c1.category_father as ff,
+		c1.category_name as fname,
+		c2.category_id as cid,
+		c2.category_father as cf,
+		c2.category_name as cname 
+		from category c1 left join category c2 on c1.category_id=c2.category_father
+	</select>
+</mapper>

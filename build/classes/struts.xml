@@ -30,8 +30,18 @@
 			访问：
 				http://localhost:8989/Struts2Day1/myAction
 		 -->
-		 <!-- 通用拦截器 -->
-		
+		 <!-- 通用拦截器 一切传回notLogin的action跳转至登录页面-->
+		 <global-results>
+		 	<result name="notLogin">/jsp/login.jsp</result>
+		 </global-results>
+		 <!-- 主页浏览 -->
+		<action name="MainPage" class="dangdang.action.MainPage">
+			<result name="findByPriceRangeSuccess">/jsp/index.jsp</result>
+		</action>
+		<!-- 注册 -->
+		<action name="Register" class="dangdang.action.Register"> 
+			<result name="registSuccess">/jsp/welcome.jsp</result>
+		</action>
 	</package>
 </struts>
 

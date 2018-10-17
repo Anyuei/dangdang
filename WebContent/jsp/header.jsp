@@ -72,7 +72,7 @@
 			width: 48px;
 			height: 40px;
 			border: none;
-			background: url(..images/header/head_sprite.png) no-repeat 0 -346px;
+			background: url("../images/header/head_sprite.png") no-repeat 0 -346px;
 			cursor: pointer;
 			position: absolute;
 		}
@@ -106,7 +106,7 @@
 				
 				<ul class="nav navbar-nav navbar-right">
 						<!--<c:if test="${sessionScope.username!=null}">-->
-							<li>
+							<li> 
 								<a href="${pageContext.request.contextPath}/MyGro?username=${sessionScope.username}" target="_blank">个人信息</a>
 							</li>
 							<li>
@@ -115,7 +115,7 @@
 						<!--</c:if>-->
 						<!--<c:if test="${sessionScope.username==null}">-->
 							<li>
-								<a href="${pageContext.request.contextPath}/Login.jsp" target="_blank">欢迎登录</a>
+								<a href="${pageContext.request.contextPath}/jsp/login.jsp" target="_blank">欢迎登录</a>
 							</li>
 						<!--</c:if>-->
 						<li>

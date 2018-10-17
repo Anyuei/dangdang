@@ -1,6 +1,8 @@
 package dangdang.beans;
 
-public class Seller {
+import java.io.Serializable;
+
+public class Seller implements Serializable{
 	private String id;
 	private String name;
 	private String nickname;

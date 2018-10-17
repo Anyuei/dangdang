@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 
@@ -38,34 +39,80 @@
 			float: right;
 			margin-top: 34px;
 		}
+		.change{
+			font-weight: bolder;
+			font-size: 18px;
+			color: white;
+			padding-top: 4px;
+			height: 30px;
+			text-align: center;
+			background-color: #FF6600;
+			border-radius: 10px 10px 0px 0px;
+		}
+		.change:hover{
+			background-color: #ff2832;
+		}
+		.subre{
+			width: 100%;
+			font-weight: bolder;
+			font-size: 18px;
+			color: white;
+			padding-top: 4px;
+			height: 30px;
+			text-align: center;
+			background-color: #FF6600;
+			border-radius: 0px 0px 10px 10px;
+		}
+		.subre:hover{
+			background-color: #ff2832;
+		}
+		.redius{
+			height: 100%;
+			border-radius: 40px 20px 60px 20px;
+		}
+		#ad{
+			transition: width 3s;
+		}
+		#ad img:hover{
+			width: 70%;
+		}
 	</style>
-
+	
 	<body background="">
-		<div class="container">
-		<!--copyright anyunpei  -->
-		<!-- 登录头部 -->
-		<div class="head">
-			<a href="">
-				<img src="${pageContext.request.contextPath}/images/logo.png">
-			</a>
-			<div class="improve">
-				<span class="icon"></span>
-				<a class="info" href="http://survey.dangdang.com/html/2526.html" target="_blank">“登录页面“改进建议</a>
+		<div class="container">                               
+			<!--copyright anyunpei  -->
+			<!-- 登录头部 -->
+			<div class="head">                   
+				<a href="${pageContext.request.contextPath}/jsp/MainPage">
+					<img src="${pageContext.request.contextPath}/images/logo.png">
+				</a>
+				<div class="improve">
+					<span class="icon"></span>
+					<a class="info" href="http://survey.dangdang.com/html/2526.html" target="_blank">“登录页面“改进建议</a>
+				</div>
 			</div>
-		</div>
-		<!-- 登录主体 -->
-		
+			<!-- 登录主体 -->
+
 			<div class="row-fluid">
 				<div class="span5 offsetHalf block" style="padding: 40px 30px 40px 30px; height: auto;">
 					<div class="row">
 						<!--广告页面-->
-						<div class="col-md-8" style=" position:relative; ">
-							<img src="${pageContext.request.contextPath}/images/一书一世界.png" style="margin-top: 25%;margin-left: 20%;position:absolute;width: 100%;"/>
-							<a href=""></a><img src="${pageContext.request.contextPath}/images/loginMain.jpg" style="width: 100%;border-radius: 20px 200px 20px 200px;"/>
+						<div class="col-md-8" id="ad" style=" position:relative; " onmouseover="hide()" onmouseleave="show()">
+							<img src="${pageContext.request.contextPath}/images/一书一世界.png" style="margin-top: 25%;margin-left: 20%;position:absolute;width: 100%;" />
+							<img src="${pageContext.request.contextPath}/images/loginMain.jpg" style="width: 100%;border-radius: 20px 200px 20px 200px;" />
 						</div>
 						<!--登录框-->
-						<div class="col-md-4" style=" margin-top: 50px; ">
-							<form action="${pageContext.request.contextPath}/Login" method="post">
+						<div class="col-md-4" id="loginRegist" style="height: 30PX;">
+								<div class="col-md-6" onclick="showLogin()">
+									<div class="change">登录</div>
+								</div>
+								<div class="col-md-6" onclick="showRegist()">
+									<div class="change">注册</div>
+								</div>
+							</div>
+
+						<div class="col-md-4 redius" id="login" style="padding: 10px 50px 26px; display: block;background-color: #ffd2dd;">
+							<form action="${pageContext.request.contextPath}/Login"  method="post">
 								<div class="form-group">
 									<label for="username">用户名</label> <input type="text" class="form-control" value='${param.usernameCookie}' placeholder="请输入用户名" name="username" required="required">
 
@@ -81,19 +128,114 @@
 									<input type="checkbox" class="form-check-input" id="exampleCheck1" name="rememberMe"> <label class="form-check-label" for="exampleCheck1">记住用户名和密码</label>
 
 								</div>
-								<button type="submit" class="btn btn-primary" value="登陆">登录</button>
-								<button type="reset" class="btn btn-primary" value="重置">重置</button>
+								<button type="submit" class="btn btn-info btn-block" value="登陆">登录</button>
+								<button type="reset" class="btn btn-info btn-block" value="重置">重置</button>
 							</form>
+						</div>
+						<!--注册框-->
+						<div class="col-md-4 redius" id="register" style="padding: 10px 50px; display: none;background-color: #ffb3c5;">
+						<form action="${pageContext.request.contextPath}/Register"
+							method="post">
+							<!--username  -->
+							<div class="form-group">
+								<label for="username">用户名</label> 
+								<input type="text"
+									class="form-control" 
+									value='${cookie.username.value}'
+									placeholder="请输入昵称" 
+									name="username"
+									required="required">
+									<c:if test="${sessionScope.registerError!=null}">
+										<small class="form-text text-muted">
+										${sessionScope.registerError}
+										</small>
+									</c:if>
+							</div>
+							<!--password  -->
+							<div class="form-group">
+								<label for="password">密码</label> 
+								<input type="password"
+									class="form-control" 
+									value='${cookie.password.value}'
+									placeholder="请输入密码" 
+									name="password"
+									required="required"> 
+									<small class="form-text text-muted">
+									We'll never share your password with anyone else.
+									</small>
+							</div>
+							<!--realname  -->
+							<div class="form-group">
+								<label for="realname">真实姓名</label> 
+								<input type="text"
+									class="form-control" 
+									value='${cookie.realname.value}'
+									placeholder="请输入真实姓名" 
+									name="realname"
+									required="required"> 
+									<small class="form-text text-muted">
+									We'll never share your realname with anyone else.
+									</small>
+							</div>
+							<!-- tel --> 
+							<div class="form-group">
+								<label for="tel">电话</label> 
+								<input type="text"
+									class="form-control" 
+									
+									placeholder="请输入电话号码" 
+									name="tel"
+									required="required"> 
+									<small class="form-text text-muted">
+									We'll never share your telephone with anyone else.
+									</small>
+							</div>
+
+							<!--address  -->
+							<div class="form-group">
+								<label for="address">地址</label> 
+								<input type="text"
+									class="form-control" value='${cookie.address.value}'
+									placeholder="请输入收货地址" name="address" 
+									required="required">
+							</div>
+							<button type="submit" class="btn btn-info btn-block" value="登陆">注册</button>
+							<button type="reset" class="btn btn-info btn-block" value="重置">重置</button>
+						</form>
 						</div>
 					</div>
 				</div>
-				
-				
+
 			</div>
 			<!-- 网站尾部 -->
 			<%@include file="/jsp/footer.jsp" %>
 		</div>
-		
-	</body>
 
+	</body>
+	<script type="text/javascript">
+		function showLogin(){
+			$('#login').css('display','block');
+			$('#register').css('display','none');
+		}
+		function showRegist(){
+			$('#login').css('display','none');
+			$('#register').css('display','block');
+		}
+		function hide(){
+			var w=$('.col-md-4').width;
+			$('.col-md-4').css('width',w*1.2);
+
+			
+		}
+/* 		function hide(){
+			$('.login').css('display','none');
+			$('#register').css('display','none');
+			$('#loginRegist').css('display','none');
+			
+		} */
+/* 		function show(){
+			$('#login').css('display','block');
+			$('#loginRegist').css('display','block');
+		} */
+	</script>
 </html>

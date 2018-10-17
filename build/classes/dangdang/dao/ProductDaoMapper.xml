@@ -3,7 +3,7 @@
 <!-- 用于操作ProductDao的sql语句映射 -->
 <mapper namespace="dangdang.dao.ProductDao">
 
-	<cache></cache>
+	
 	<!-- 根据商品id查询商品信息 映射关系 -->
 	<resultMap type="dangdang.beans.Product" id="productMap">
 		<id column="pId" property="pId"/>
@@ -11,11 +11,6 @@
 		<result column="pDetials" property="pDetials"/>
 		<result column="sales" property="sales"/>
 		<result column="price" property="price"/>
-		
-		<collection property="imgPaths" ofType="dangdang.beans.ImgPath">
-			<result column="img_id" property="imgPath_Id"/>
-			<result column="path" property="imgPath"/>
-		</collection>
 	</resultMap>
 	<!-- 根据 商品 或 用户id查询商品评论 映射关系 -->
 	<resultMap type="dangdang.beans.DangComments" id="productCommentMap">
@@ -29,34 +24,37 @@
 			<result column="commentTime" property="commentTime"/>
 		</collection>
 	</resultMap>
+	<!-- 根据 商品 或 用户id查询商品评论 映射关系 -->
+	<resultMap type="dangdang.beans.ImgPath" id="productImgPathMap">
+	
+		<result column="img_id" property="imgPath_Id"/>
+		
+		<collection property="imgPaths" ofType="String">
+			<result column="img_path"/>
+		</collection>
+	</resultMap>
 		<!-- 根据价格区间 查询某商品 -->
 	<select id="queryByPriceRange" resultMap="productMap">
 		<!-- 商品详情 -->
-		select id as pId,name as pName,detials as pDetials,sales,price,
-		<!-- 商品图片 -->
-		img_id,img_path as path
+		select id as pId,name as pName,detials as pDetials,sales,price
 		<!-- 添加rownum列 -->
-		from (select sp.*,rownum rn from 
-		<!-- 商品信息表与商品图片表连接 -->
-			(select * from dangproduct dp left join
-			<!-- 以id连接，图片id外键于商品id -->
-			product_imgPath pip on dp.id=pip.img_id
+		from (select dp.*,rownum rn from dangproduct dp
 			<trim prefix ="where" prefixOverrides="and">
 			<!-- 查询所有 -->
 				<if test="lowPrice==null and highPrice==null">
-					name like '%'||#{productName}||'%')sp) 
+					name like '%'||#{productName}||'%')
 				</if>
 				<!-- 查询低于某价格的 -->
 				<if test="lowPrice==null and highPrice!=null">
-					name like '%'||#{productName}||'%' and price&lt;=#{highPrice})sp)
+					name like '%'||#{productName}||'%' and price&lt;=#{highPrice})
 				</if>
 				<!-- 查询在价格在某个区间内的 -->
 				<if test="lowPrice!=null and highPrice!=null">
-					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice} and price&lt;=#{highPrice})sp)
+					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice} and price&lt;=#{highPrice})
 				</if>
 				<!-- 查询价格高于多少的 -->
 				<if test="lowPrice!=null and highPrice==null">
-					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice})sp)
+					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice})
 				</if>
 			</trim>
 			WHERE rn&gt;=#{begin} and rn&lt;=#{end} 
@@ -88,11 +86,8 @@
 	<!-- 根据商品id查询商品信息 -->
 	<select id="queryById" resultMap="productMap">
 		select 
-		id as pId,name as pName,detials as pDetials,sales,price,
-		img_id,img_path as path
+		id as pId,name as pName,detials as pDetials,sales,price
 		from dangproduct dp 
-		left join
-		product_imgPath pip on dp.id=pip.img_id
 		where dp.id=#{id}
 	</select>
 	<!-- 根据商品id查询商品评论 -->
@@ -118,5 +113,9 @@
 		from 
 		dangComment
 		where Comment_Uid=#{id}
+	</select>
+	<!-- 根据产品id查询商品图片 -->
+	<select id="queryImgByPId" resultMap="productImgPathMap">
+		select img_id,img_path from product_imgPath where img_id=#{pId}
 	</select>
 </mapper>

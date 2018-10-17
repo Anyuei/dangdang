@@ -19,13 +19,13 @@ public class Product implements Serializable{
 	private String pCategory;//种类
 	private Integer sales;//销量
 	private Double price;//价格
-	private List<ImgPath> imgPaths;//图片路径
-	
+	private ImgPath ipath;//图片路径
 	public Product() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 	public Product(String pId, String pName, String pDetials, String pCategory, Integer sales, Double price,
-			List<ImgPath> imgPaths) {
+			ImgPath ipath) {
 		super();
 		this.pId = pId;
 		this.pName = pName;
@@ -33,7 +33,7 @@ public class Product implements Serializable{
 		this.pCategory = pCategory;
 		this.sales = sales;
 		this.price = price;
-		this.imgPaths = imgPaths;
+		this.ipath = ipath;
 	}
 	public String getPId() {
 		return pId;
@@ -71,11 +71,11 @@ public class Product implements Serializable{
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public List<ImgPath> getImgPaths() {
-		return imgPaths;
+	public ImgPath getIpath() {
+		return ipath;
 	}
-	public void setImgPaths(List<ImgPath> imgPaths) {
-		this.imgPaths = imgPaths;
+	public void setIpath(ImgPath ipath) {
+		this.ipath = ipath;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -83,6 +83,7 @@ public class Product implements Serializable{
 	@Override
 	public String toString() {
 		return "Product [pId=" + pId + ", pName=" + pName + ", pDetials=" + pDetials + ", pCategory=" + pCategory
-				+ ", sales=" + sales + ", price=" + price + ", imgPaths=" + imgPaths + "]";
+				+ ", sales=" + sales + ", price=" + price + ", ipath=" + ipath + "]";
 	}
+	
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import dangdang.beans.DangComments;
+import dangdang.beans.ImgPath;
 import dangdang.beans.Product;
 
 public interface ProductDao {
@@ -49,4 +50,6 @@ public interface ProductDao {
 			@Param("productName")String productName,
 			@Param("lowPrice")Double lowPrice,
 			@Param("highPrice")Double highPrice);
+	public ImgPath queryImgByPId(
+			@Param("pId")String pId);
 }
