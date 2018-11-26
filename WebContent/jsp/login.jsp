@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!DOCTYPE html>
 <html>
 
@@ -75,6 +76,23 @@
 		}
 		#ad img:hover{
 			width: 70%;
+			position:relative; 
+			
+		}
+		#register{
+			padding: 10px 50px;
+			display: none;
+			background-color: rgb(255, 237, 242);
+			box-shadow: #ffd2dd 3px -3px 1000px 13px;
+		}
+		#login{
+			padding: 10px 50px 26px; 
+			display: block;
+			background-color: rgb(255, 237, 242);
+			box-shadow: #ffd2dd 3px -3px 1000px 13px;
+		}
+		.form-control{
+			box-shadow: rgb(255, 179, 197) 0px 0px 17px 5px;
 		}
 	</style>
 	
@@ -83,7 +101,7 @@
 			<!--copyright anyunpei  -->
 			<!-- 登录头部 -->
 			<div class="head">                   
-				<a href="${pageContext.request.contextPath}/jsp/MainPage">
+				<a href="${pageContext.request.contextPath}/jsp/index.jsp">
 					<img src="${pageContext.request.contextPath}/images/logo.png">
 				</a>
 				<div class="improve">
@@ -97,9 +115,9 @@
 				<div class="span5 offsetHalf block" style="padding: 40px 30px 40px 30px; height: auto;">
 					<div class="row">
 						<!--广告页面-->
-						<div class="col-md-8" id="ad" style=" position:relative; " onmouseover="hide()" onmouseleave="show()">
+						<div class="col-md-8" id="ad"  onmouseover="hide()" onmouseleave="show()">
 							<img src="${pageContext.request.contextPath}/images/一书一世界.png" style="margin-top: 25%;margin-left: 20%;position:absolute;width: 100%;" />
-							<img src="${pageContext.request.contextPath}/images/loginMain.jpg" style="width: 100%;border-radius: 20px 200px 20px 200px;" />
+							<img src="${pageContext.request.contextPath}/images/loginMain.jpg" style="width: 100%;border-radius: 20px 200px 20px 200px;box-shadow: rgb(255, 179, 197) -55px 52px 14px -1px;" />
 						</div>
 						<!--登录框-->
 						<div class="col-md-4" id="loginRegist" style="height: 30PX;">
@@ -110,53 +128,74 @@
 									<div class="change">注册</div>
 								</div>
 							</div>
-
-						<div class="col-md-4 redius" id="login" style="padding: 10px 50px 26px; display: block;background-color: #ffd2dd;">
+						
+						<div class="col-md-4 redius" id="login" style="padding: 10px 50px 26px; display: block;background-color: #ffedf2;;box-shadow: #ffd2dd 3px -3px 1000px 13px;">
+								<c:if test="#session.KaptchaError!=null">
+										<small class="form-text text-muted">
+										${sessionScope.KaptchaError}！
+										</small>
+								</c:if>
+								<c:if test="#session.LoginError!=null">
+										<small class="form-text text-muted">
+										${sessionScope.LoginError}！
+										</small>
+								</c:if>
 							<form action="${pageContext.request.contextPath}/Login"  method="post">
 								<div class="form-group">
-									<label for="username">用户名</label> <input type="text" class="form-control" value='${param.usernameCookie}' placeholder="请输入用户名" name="username" required="required">
+									<label for="username">用户名</label> 
+									<input type="text" class="form-control"  value='${cookie.username.value}' placeholder="请输入用户名" name="username" required="required">
 
 								</div>
 								<div class="form-group">
-									<label for="password">密码</label> <input type="password" class="form-control" value='${cookie.password.value}' placeholder="请输入密码" name="password" required="required"> <small id="emailHelp" class="form-text text-muted">We'll never
+									<label for="password">密码</label> 
+									<input type="password" class="form-control" value='${cookie.password.value}' placeholder="请输入密码" name="password" required="required"> 
+									<small id="emailHelp" class="form-text text-muted">We'll never
 										share your password with anyone else.</small>
 								</div>
 								<div class="form-group">
-									<label for="Captcha">请输入验证码</label> <img src="${pageContext.request.contextPath}/Kaptcha.jpg" alt="图片加载失败" width="100" height="40" /> <input type="text" class="form-control" name="kaptcha" required="required">
+									<label for="Captcha">请输入验证码</label> 
+									<img src="${pageContext.request.contextPath}/Kaptcha.jpg" alt="图片加载失败" width="100" height="40" /> 
+									<input type="text" class="form-control" name="kaptcha" required="required">
 								</div>
 								<div class="form-check">
-									<input type="checkbox" class="form-check-input" id="exampleCheck1" name="rememberMe"> <label class="form-check-label" for="exampleCheck1">记住用户名和密码</label>
-
+									<input type="checkbox" class="form-check-input" id="exampleCheck1" name="rememberMe"> 
+									<label class="form-check-label" for="exampleCheck1">记住用户名和密码</label>
+										<c:if test="#sessionScope.KaptchaError!=null">
+												<small class="form-text text-muted">
+												${sessionScope.KaptchaError}！
+												</small>
+										</c:if>
+										<c:if test="#sessionScope.LoginError!=null">
+												<small class="form-text text-muted">
+												${sessionScope.LoginError}！
+												</small>
+										</c:if>
 								</div>
 								<button type="submit" class="btn btn-info btn-block" value="登陆">登录</button>
 								<button type="reset" class="btn btn-info btn-block" value="重置">重置</button>
 							</form>
 						</div>
 						<!--注册框-->
-						<div class="col-md-4 redius" id="register" style="padding: 10px 50px; display: none;background-color: #ffb3c5;">
+						<div class="col-md-4 redius" id="register">
 						<form action="${pageContext.request.contextPath}/Register"
 							method="post">
 							<!--username  -->
 							<div class="form-group">
-								<label for="username">用户名</label> 
+								<label for="nickname">用户名</label> 
 								<input type="text"
 									class="form-control" 
-									value='${cookie.username.value}'
 									placeholder="请输入昵称" 
-									name="username"
-									required="required">
-									<c:if test="${sessionScope.registerError!=null}">
-										<small class="form-text text-muted">
-										${sessionScope.registerError}
-										</small>
-									</c:if>
+									name="nick"
+									id="nick"                     
+									onmouseleave="checkUsername()"
+									required="required" >                            
+									<span id="check"></span>
 							</div>
 							<!--password  -->
 							<div class="form-group">
 								<label for="password">密码</label> 
 								<input type="password"
 									class="form-control" 
-									value='${cookie.password.value}'
 									placeholder="请输入密码" 
 									name="password"
 									required="required"> 
@@ -166,12 +205,11 @@
 							</div>
 							<!--realname  -->
 							<div class="form-group">
-								<label for="realname">真实姓名</label> 
+								<label for="username">真实姓名</label> 
 								<input type="text"
 									class="form-control" 
-									value='${cookie.realname.value}'
 									placeholder="请输入真实姓名" 
-									name="realname"
+									name="username"
 									required="required"> 
 									<small class="form-text text-muted">
 									We'll never share your realname with anyone else.
@@ -182,7 +220,6 @@
 								<label for="tel">电话</label> 
 								<input type="text"
 									class="form-control" 
-									
 									placeholder="请输入电话号码" 
 									name="tel"
 									required="required"> 
@@ -193,10 +230,10 @@
 
 							<!--address  -->
 							<div class="form-group">
-								<label for="address">地址</label> 
+								<label for="email">邮箱</label> 
 								<input type="text"
-									class="form-control" value='${cookie.address.value}'
-									placeholder="请输入收货地址" name="address" 
+									class="form-control" value='${cookie.email.value}'
+									placeholder="请输入邮编" name="email" 
 									required="required">
 							</div>
 							<button type="submit" class="btn btn-info btn-block" value="登陆">注册</button>
@@ -227,15 +264,33 @@
 
 			
 		}
-/* 		function hide(){
+	function hide(){
 			$('.login').css('display','none');
 			$('#register').css('display','none');
 			$('#loginRegist').css('display','none');
 			
-		} */
-/* 		function show(){
+		} 
+	function show(){
 			$('#login').css('display','block');
 			$('#loginRegist').css('display','block');
-		} */
+		} 
+	function checkUsername(){
+		var nickname= $('#nick').val();
+		if(nickname!=""){		
+			$.ajax({
+				type : "post",
+				async : true,
+				url : 'checkUsername',
+				data : {
+					nickname : nickname,
+				},
+				success:function(data){
+					$('#check').text(data);
+				}
+			})
+		}else{                                                                   
+			$('#check').text("");
+		}
+	}
 	</script>
 </html>

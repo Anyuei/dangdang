@@ -14,8 +14,7 @@ public class ImgPath implements Serializable{
 	private List<String> imgPaths;
 	
 	public ImgPath() {
-		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 	public ImgPath(String imgPath_Id, List<String> imgPaths) {
 		super();

@@ -1,7 +1,12 @@
 package dangdang.beans;
 
 import java.io.Serializable;
-
+/**
+ * Seller.java
+ * @author anyunpei
+ *2018年10月22日上午9:35:26
+ * 卖家信息bean
+ */
 public class Seller implements Serializable{
 	private String id;
 	private String name;

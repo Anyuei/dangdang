@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop.xsd
+						http://www.springframework.org/schema/tx
+						http://www.springframework.org/schema/tx/spring-tx.xsd
+						http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context.xsd">
+	<context:property-placeholder location="classpath:jdbc.properties"/>
+	<!-- 连接池：dbcp -->
+	<bean id="dbcp_pool" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<!-- 基本参数 -->
+		<property name="url" value="${jdbc.url}"></property>
+		<property name="username" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<property name="driverClassName" value="${jdbc.oracleDriver}"></property>
+		<!-- 详细参数 -->
+		<!-- 连接池的最大连接对象 数量 -->
+		<property name="maxActive" value="3"></property>
+		<!-- 最少要空闲 1 个连接对象 -->
+		<property name="minIdle" value="1"></property>
+		<!-- 初始化连接池  要创建1个连接对象 -->
+		<property name="initialSize" value="1"></property>
+		<!-- 当向连接池索要连接时，如果没有空闲连接，最大等待的时长：毫秒 -->
+		<property name="maxWait" value="3000"></property>
+	</bean>
+<!-- 	 连接池：c3p0 
+	<bean id="c3p0_pool" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		基本参数
+		<property name="jdbcUrl" value="${jdbc.url}"></property>
+		<property name="user" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<property name="driverClass" value="${jdbc.oracleDriver}"></property>
+		详细参数
+		连接池的最大连接对象 数量
+		<property name="maxPoolSize" value="3"></property>
+		最少要空闲 1 个连接对象
+		<property name="minPoolSize" value="1"></property>
+		初始化连接池  要创建1个连接对象
+		<property name="initialPoolSize" value="1"></property>
+		当向连接池索要连接时，如果没有空闲连接，最大等待的时长：毫秒
+		<property name="checkoutTimeout" value="3000"></property>
+	</bean>
+	连接池：druid
+	<bean id="druid_pool" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		基本参数
+		<property name="url" value="${jdbc.url}"></property>
+		<property name="username" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		详细参数
+		连接池的最大连接对象 数量
+		<property name="maxActive" value="3"></property>
+		最少要空闲 1 个连接对象
+		<property name="minIdle" value="1"></property>
+		初始化连接池  要创建1个连接对象
+		<property name="initialSize" value="1"></property>
+		当向连接池索要连接时，如果没有空闲连接，最大等待的时长：毫秒
+		<property name="maxWait" value="3000"></property>
+		驱逐线程运行间隔
+		<property name="timeBetweenEvictionRunsMillis" value="60000"></property>
+		连接空闲超过100000ms 则成为一个可以被驱逐的对象
+		<property name="minEvictableIdleTimeMillis" value="100000"></property>
+		用于检测连接有效的  sql语句  (心跳)
+		<property name="validationQuery" value="select 1 from dual"></property>
+		检测的时机
+		<property name="testWhileIdle" value="true"></property>
+		<property name="testOnReturn"  value="false"></property>
+		<property name="testOnBorrow"  value="false"></property>
+	</bean> -->
+	<!-- 工厂bean：生成SqlSessionFactory -->
+	<bean id="sqlSessionFactory139" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 连接池 -->
+		<property name="dataSource" ref="dbcp_pool"></property>
+		<!-- dao-mapper文件信息 -->
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:dangdang/dao/*Mapper.xml</value>
+			</list>
+		</property>
+		<!-- 为 dao-mapper文件中的实体 定义缺省包路径 -->
+		<property name="typeAliasesPackage" value="dangdang.beans"></property>
+	</bean>
+	
+	
+	<!-- mapperScannerConfigurer
+		生产DAO实现类的对象，纳入工厂管理
+		行为：
+		  1.扫描所有DAO接口
+		  2.根据掌握的DAO-Mapper和SqlSession ,去构建DAO实现类 对象
+		  3.将对象 纳入工厂管理 且对象在工厂中的id是：首字母小写的-接口的类名 UserDao==userDao  OrderDao==orderDaos
+	 -->
+	<bean id="mapperScannerConfigurer139" class="org.mybatis.spring.mapper.MapperScannerConfigurer">	
+		<!-- dao接口所在的包  如果有多个包，可以用逗号或分号分隔 
+		<property name="basePackage" value="com.a.dao,com.b.dao"></property>
+		-->
+		<property name="basePackage" value="dangdang.dao"></property>
+		<!-- SqlSessionFacotry: *mapper文件  *SqlSession 
+			 如果当前工厂中，只有一个SqlSessionFactory,则此步可以省略
+		-->
+		<!-- <property name="sqlSessionFactory" ref="sqlSessionFactory139"></property> -->
+		<!-- <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory139"></property> -->
+	</bean>
+	<!-- service -->
+	<!-- 事务管理 -->
+	<!-- 1.引入一个半成品，虽然不是额外功能，但是持有连接，控制了事务管理行为 -->
+	<bean id="tx" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dbcp_pool"></property>
+	</bean>
+	<!-- 告知spring，哪些包中 有被注解的类、方法、属性 -->
+	<!-- <context:component-scan base-package="com.baizhi.action,com.baizhi.service"></context:component-scan> -->
+	<context:component-scan base-package="dangdang" use-default-filters="true">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"></context:exclude-filter>
+	</context:component-scan>
+	<!-- 告知spring，@Transactional在定制事务时，基于tx -->
+	<tx:annotation-driven transaction-manager="tx"/>
+</beans>						

@@ -20,4 +20,16 @@ public interface UserService {
 		 * @return
 		 */
 		User login(String username,String password);
+		/**
+		 * 根据id查询用户信息
+		 * @param id
+		 * @return
+		 */
+		User queryUserById(String id);
+		/**
+		 * 根据昵称查询用户信息
+		 * @param name
+		 * @return
+		 */
+		User queryUserByName(String name);
 }

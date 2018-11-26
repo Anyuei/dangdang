@@ -1,0 +1,45 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 用于操作UserDao的sql语句映射 -->
+<mapper namespace="dangdang.dao.UserDao">
+	<!-- 根据id查询用户 -->
+	<select id="queryUserById" resultType="dangdang.beans.User">
+		SELECT 
+			id,
+			name,
+			nickname,
+			password,
+			tel,
+			email
+		 FROM dangUser WHERE id=#{uId}
+	</select>
+	<!-- 根据昵称查询用户 -->
+	<select id="queryUserByName" resultType="dangdang.beans.User">
+		SELECT 
+			id,
+			name,
+			nickname,
+			password,
+			tel,
+			email		
+		 FROM dangUser WHERE nickname=#{nickname}
+	</select>
+	<!-- 修改用户 -->
+	<update id="updateUser">
+		UPDATE dangUser 
+		<set>
+			<if test="nickname!=null">nickname=#{nickname},</if>
+			<if test="password!=null">password=#{password},</if>
+			<if test="tel!=null">tel=#{tel},</if>
+			<if test="email!=null">email=#{email}</if>
+		</set>
+		WHERE id=#{id} 
+	</update>
+	<!-- 添加用户 -->
+	<insert id="insertUser">
+		<selectKey keyProperty="id" resultType="String" order="BEFORE">
+		SELECT dangUser_seq.nextval FROM dual
+		</selectKey>
+		INSERT INTO dangUser VALUES(#{id},#{name},#{nickname},#{password},#{tel},#{email})
+	</insert>
+</mapper>

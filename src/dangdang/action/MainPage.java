@@ -1,68 +1,97 @@
 package dangdang.action;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.ServletActionContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.opensymphony.xwork2.ActionSupport;
-
+import dangdang.beans.Category;
 import dangdang.beans.Product;
 import dangdang.serviceImpl.ProductServiceImpl;
-
-public class MainPage extends ActionSupport{
-	private String productName;
-	private Integer currentPage;
-	private Double lowPrice;
-	private Double highPrice;
+@Controller
+@Scope("prototype")
+@RequestMapping("/main")
+public class MainPage{
+	private Integer betterSalesPage;
+	private Integer categoryBookPage;
+	private String categoryId;
+	private String father_categorieID;
+	@Resource
+	private ProductServiceImpl productServiceImpl;
 	List<Product> products;
-	public String execute() throws Exception {
+	List<Category> categories;
+	
+	public String queryAllOrderBySales(
+			@RequestParam String productName,
+			@RequestParam Double highPrice,
+			@RequestParam Double lowPrice,
+			@RequestParam Integer betterSalesPage) throws Exception {
+		Integer pageContains=4;//每页能显示的商品数
 		HttpServletRequest request = ServletActionContext.getRequest();
 		Integer results=0;
-		if (currentPage==null) {
-			currentPage=1;
+		if (betterSalesPage==null) {
+			betterSalesPage=1;
 		}
 		if (productName==null) {
 			productName="";
 		}
 		try {
-			products = new ProductServiceImpl().queryAll(productName,lowPrice, highPrice, currentPage); 
-			results = new ProductServiceImpl().queryAllNumber(productName,lowPrice, highPrice);
+			products = productServiceImpl.queryAllOrderBySales(productName,lowPrice, highPrice, betterSalesPage,pageContains); 
+			results = productServiceImpl.queryAllNumber(productName,lowPrice, highPrice);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("结果集为"+results);
-		request.setAttribute("pages", (int) Math.ceil(1.0 * results / 3));
-		return "findByPriceRangeSuccess";
+		request.setAttribute("pages", (int) Math.ceil(1.0 * results / pageContains));
+		return "queryAllOrderBySales";
 	}
-	public String getProductName() {
-		return productName;
+	/**
+	 * 浏览所有图书
+	 */
+	@RequestMapping("/QueryAll")
+	public String queryAll(HttpServletRequest request,
+			@RequestParam(required=false) Integer allbookPage,
+			@RequestParam(required=false) String productName,
+			@RequestParam(required=false) Double highPrice,
+			@RequestParam(required=false) Double lowPrice) throws Exception {
+		Integer pageContains=4;//每页能显示的商品数
+		Integer results=0;
+		System.out.println(allbookPage+productName);
+		if (allbookPage==null) {
+			allbookPage=1;
+		}
+		if (productName==null) {
+			productName="";
+		}
+		try {
+			products = productServiceImpl.queryAll(productName,lowPrice, highPrice, allbookPage,pageContains); 
+			results = productServiceImpl.queryAllNumber(productName,lowPrice, highPrice);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		request.setAttribute("pages", (int) Math.ceil(1.0 * results / pageContains));
+		return "forward:/jsp/allbook.jsp";
 	}
-	public void setProductName(String productName) {
-		this.productName = productName;
+	/**
+	 * 根据种类查询商品信息
+	 * @return
+	 * @throws Exception
+	 */
+	public String queryProductsByCategory(HttpServletRequest request) throws Exception {
+		Integer results=0;
+		try {
+			products = productServiceImpl.queryProductsByCategory(categoryId,categoryBookPage); 
+			categories = productServiceImpl.queryCategoryById(father_categorieID);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		/*request.setAttribute("pages", (int) Math.ceil(1.0 * results / 3));*/
+		return "queryPIdCategorySuccess";
 	}
-	public Integer getCurrentPage() {
-		return currentPage;
-	}
-	public void setCurrentPage(Integer currentPage) {
-		this.currentPage = currentPage;
-	}
-	public Double getLowPrice() {
-		return lowPrice;
-	}
-	public void setLowPrice(Double lowPrice) {
-		this.lowPrice = lowPrice;
-	}
-	public Double getHighPrice() {
-		return highPrice;
-	}
-	public void setHighPrice(Double highPrice) {
-		this.highPrice = highPrice;
-	}
-	public List<Product> getProducts() {
-		return products;
-	}
-	public void setProducts(List<Product> products) {
-		this.products = products;
-	}
+
+
 	
 }

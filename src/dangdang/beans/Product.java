@@ -6,12 +6,9 @@ import java.util.List;
  * Product.java
  * @author anyunpei
  *2018年10月13日上午7:55:41
- *
+ * 产品信息bean
  */
 public class Product implements Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private String pId;
 	private String pName;
@@ -22,7 +19,6 @@ public class Product implements Serializable{
 	private ImgPath ipath;//图片路径
 	public Product() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public Product(String pId, String pName, String pDetials, String pCategory, Integer sales, Double price,
 			ImgPath ipath) {

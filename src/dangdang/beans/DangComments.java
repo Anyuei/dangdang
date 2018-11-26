@@ -5,11 +5,14 @@ import java.util.List;
  * DangComments.java
  * @author anyunpei
  *2018年10月14日下午6:22:30
- *
+ *	评论bean 与评论信息映射bean
  */
 public class DangComments {
 	private String commentId;
 	private List<Comment> comments;
+	public DangComments() {
+		super();
+	}
 	public String getCommentId() {
 		return commentId;
 	}
@@ -32,8 +35,4 @@ public class DangComments {
 		this.commentId = commentId;
 		this.comments = comments; 
 	}
-	public DangComments() {
-		super();
-	}
-	
 }

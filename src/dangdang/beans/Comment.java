@@ -2,12 +2,19 @@ package dangdang.beans;
 
 import java.io.Serializable;
 import java.util.Date;
-
+/**
+ * Comment.java
+ * @author anyunpei
+ *2018年10月22日上午9:36:47
+ * 评论详情bean
+ */
 public class Comment implements Serializable{
-	private String uId;//用户id
 	private String pId;//产品id
+	private String uId;//用户id
 	private String comment;//评论
 	private Date commentTime;//评论时间
+	public Comment() {
+	}
 	public String getUId() {
 		return uId;
 	}
@@ -43,8 +50,5 @@ public class Comment implements Serializable{
 		this.comment = comment;
 		this.commentTime = commentTime;
 	}
-	public Comment() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+
 }

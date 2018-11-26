@@ -1,45 +1,69 @@
 package dangdang.action;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.google.code.kaptcha.Constants;
-import com.opensymphony.xwork2.ActionSupport;
+import com.google.code.kaptcha.servlet.KaptchaExtend;
+
 import dangdang.beans.User;
-import dangdang.serviceImpl.UserServiceImpl;
+import dangdang.service.UserService;
 import dangdang.utils.MD5Utils;
-
 /**
- * Servlet implementation class Login
+ * Login.java
+ * @author anyunpei
+ * 2018年10月19日下午8:41:34
+ * 登录操作 核心代码
  */
-
-public class Login extends ActionSupport {
-
-	private String kaptcha;
-	private String username;
-	private String password;
-	private String rememberMe;
-	public String login(){
-		HttpServletRequest request = ServletActionContext.getRequest();
-		HttpServletResponse response = ServletActionContext.getResponse();
+@Controller
+@Scope("prototype")
+@RequestMapping("/a")
+public class Login {
+	@Autowired
+	private KaptchaExtend kaptcha; //注入验证码组件
+	@Autowired
+	private UserService userService;
+	@RequestMapping("/Login")
+	public String login(
+			@RequestParam String rememberMe,
+			@RequestParam String password,
+			@RequestParam String username,
+			HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException{
+		response.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
+		kaptcha.captcha(request, response);
 		String encryptpassword=null;
+		System.out.println(rememberMe);
 		if (session == null) {
-			return "loginFail";
+			return "redirect:/jsp/index.jsp";
 		} else {
 			//加密密码
-			System.out.println(kaptcha);
-			encryptpassword = new MD5Utils().getStringMD5(password);
+			System.out.println("验证码为："+kaptcha);
+			encryptpassword = MD5Utils.getStringMD5(password);
+			System.out.println("加密密码为"+encryptpassword);
 			// 调用service层login方法
-			User user = new UserServiceImpl().login(username, encryptpassword);
-			System.out.println(user);
+			User user = userService.login(username, encryptpassword);
+			System.out.println("用户为："+user);
 			// 判断用户名密码是否正确，或验证码是否正确
-			if (user == null || !session.getAttribute(Constants.KAPTCHA_SESSION_KEY).equals(kaptcha)) {
-				return "loginFail";
+			if (user == null) {
+				request.getSession().setAttribute("LoginError", "用户名或者密码错误");
+				return "redirect:/jsp/index.jsp";
+			}else if (!session.getAttribute("code").equals(kaptcha)) {
+				request.getSession().setAttribute("KaptchaError", "验证码错误");
+				return "redirect:/jsp/index.jsp";
 			} else {
 				// 登录成功且“记住我”被选中时，记住用户名和密码
 				Cookie usernameCookie = null;
@@ -65,35 +89,11 @@ public class Login extends ActionSupport {
 				session.setAttribute("currentPage", "1");
 				session.setAttribute("flag", session);
 				session.setAttribute("username", username);
-				return "loginSuccess";
-
+				session.setAttribute("uId", user.getId());
+				return "redirect:/jsp/login.jsp";
 			}
-
+//<script type="text/javascript" src="${pageContext.request.contextPath}/js/myCart.js"></script>
 		}
 
-	}
-	public String getKaptcha() {
-		return kaptcha;
-	}
-	public void setKaptcha(String kaptcha) {
-		this.kaptcha = kaptcha;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getRememberMe() {
-		return rememberMe;
-	}
-	public void setRememberMe(String rememberMe) {
-		this.rememberMe = rememberMe;
 	}
 }

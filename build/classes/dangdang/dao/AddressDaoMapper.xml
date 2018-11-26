@@ -1,0 +1,31 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 用于操作UserDao的sql语句映射 -->
+<mapper namespace="dangdang.dao.AddressDao">
+	<!-- 根据id查询地址 -->
+	<resultMap type="dangdang.beans.AddressList" id="AddressListMap">
+		<result column="ai" property="addressId"/>
+		<collection property="address" ofType="String">
+			<result column="addr" property="address"/>
+		</collection>
+	</resultMap>
+	<select id="queryAddressById" resultMap="AddressListMap">
+		SELECT 
+			address_id AS ai,
+			address AS addr
+		FROM danguser_address WHERE address_id=#{addressId}
+	</select>
+
+	<!-- 修改地址 -->
+	<update id="updateAddressById">
+
+	</update>
+	<!-- 添加地址 -->
+	<insert id="insertAddressById">
+		INSERT INTO danguser_address values(#{addressId},#{address})
+	</insert>
+		<!-- 删除地址 -->
+	<insert id="deleteAddressById">
+
+	</insert>
+</mapper>

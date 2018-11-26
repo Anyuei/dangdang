@@ -9,6 +9,11 @@ import dangdang.beans.ImgPath;
 import dangdang.beans.Product;
 
 public interface ProductDao {
+	/**
+	 * 根据商品id查询商品
+	 * @param id
+	 * @return
+	 */
 	Product queryById(@Param("id")String id);
 	/**
 	 * 根据商品id查询商品评论
@@ -24,6 +29,7 @@ public interface ProductDao {
 	 * @return
 	 */
 	DangComments queryCommentByUId(@Param("id")String id);
+	//用于评论分页
 	Integer queryCommentByUIdCounts(@Param("id")String id);
 	/**
 	 * 根据名字模糊查询
@@ -38,18 +44,30 @@ public interface ProductDao {
 	 * @param price
 	 * @return
 	 */
-	//根据价格区间查询
 	public List<Product> queryByPriceRange(
 			@Param("productName")String productName,
 			@Param("lowPrice")Double lowPrice,
 			@Param("highPrice")Double highPrice,
 			@Param("begin")Integer begin, 
 			@Param("end")Integer end);
-	//根据价格区间查询的结果数量，用于分页
+
+	
 	public Integer queryByPriceRangeCount(
 			@Param("productName")String productName,
 			@Param("lowPrice")Double lowPrice,
 			@Param("highPrice")Double highPrice);
+	//根据价格区间查询 以销量排序
+	public List<Product> queryByPriceRangeOrderBySales(
+			@Param("productName")String productName,
+			@Param("lowPrice")Double lowPrice,
+			@Param("highPrice")Double highPrice,
+			@Param("begin")Integer begin, 
+			@Param("end")Integer end);
 	public ImgPath queryImgByPId(
 			@Param("pId")String pId);
+	public List<Product> queryProductsByCategory(
+			@Param("categoryName")String categoryName,
+			@Param("begin")Integer begin, 
+			@Param("end")Integer end);
+
 }

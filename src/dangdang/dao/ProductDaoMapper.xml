@@ -14,9 +14,7 @@
 	</resultMap>
 	<!-- 根据 商品 或 用户id查询商品评论 映射关系 -->
 	<resultMap type="dangdang.beans.DangComments" id="productCommentMap">
-	
 		<result column="commentId1" property="commentId"/>
-		
 		<collection property="comments" ofType="dangdang.beans.Comment">
 			<result column="cpId" property="pId"/>
 			<result column="cuid" property="uId"/>
@@ -24,11 +22,9 @@
 			<result column="commentTime" property="commentTime"/>
 		</collection>
 	</resultMap>
-	<!-- 根据 商品 或 用户id查询商品评论 映射关系 -->
+	<!-- 根据产品id查询商品图片  映射关系 -->
 	<resultMap type="dangdang.beans.ImgPath" id="productImgPathMap">
-	
 		<result column="img_id" property="imgPath_Id"/>
-		
 		<collection property="imgPaths" ofType="String">
 			<result column="img_path"/>
 		</collection>
@@ -36,86 +32,168 @@
 		<!-- 根据价格区间 查询某商品 -->
 	<select id="queryByPriceRange" resultMap="productMap">
 		<!-- 商品详情 -->
-		select id as pId,name as pName,detials as pDetials,sales,price
+		SELECT 
+			id AS pId,
+			name AS pName,
+			detials AS pDetials,
+			sales,
+			price
 		<!-- 添加rownum列 -->
-		from (select dp.*,rownum rn from dangproduct dp
+		FROM (
+			SELECT 
+				dp.*,
+				rownum rn 
+			FROM 
+				dangproduct dp
 			<trim prefix ="where" prefixOverrides="and">
 			<!-- 查询所有 -->
 				<if test="lowPrice==null and highPrice==null">
-					name like '%'||#{productName}||'%')
+					name LIKE '%'||#{productName}||'%') 
 				</if>
 				<!-- 查询低于某价格的 -->
 				<if test="lowPrice==null and highPrice!=null">
-					name like '%'||#{productName}||'%' and price&lt;=#{highPrice})
+					name LIKE '%'||#{productName}||'%' AND price &lt;= #{highPrice})
 				</if>
 				<!-- 查询在价格在某个区间内的 -->
 				<if test="lowPrice!=null and highPrice!=null">
-					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice} and price&lt;=#{highPrice})
+					name LIKE '%'||#{productName}||'%' AND price &gt;= #{lowPrice} AND price &lt;= #{highPrice})
 				</if>
 				<!-- 查询价格高于多少的 -->
 				<if test="lowPrice!=null and highPrice==null">
-					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice})
+					name LIKE '%'||#{productName}||'%' AND price &gt;= #{lowPrice})
 				</if>
 			</trim>
-			WHERE rn&gt;=#{begin} and rn&lt;=#{end} 
+			WHERE rn &gt;= #{begin} and rn &lt;= #{end} 
+	</select>
+		<!-- 根据价格区间 查询某商品 后 根据销量排序 -->
+	<select id="queryByPriceRangeOrderBySales" resultMap="productMap">
+		<!-- 商品详情 -->
+		SELECT 
+			id AS pId,
+			name AS pName,
+			detials AS pDetials,
+			sales,
+			price
+		<!-- 添加rownum列 -->
+		FROM (
+			SELECT
+				 oBySalesP.*,
+				 rownum rn
+			<!-- 原始数据库数据 根据 销量排序 -->
+    		FROM (select dp.* from dangproduct dp
+			<trim prefix ="where" prefixOverrides="and">
+			<!-- 查询所有 -->
+				<if test="lowPrice==null and highPrice==null">
+					name LIKE '%'||#{productName}||'%' ORDER BY sales desc)oBySalesP) 
+				</if>
+				<!-- 查询低于某价格的 -->
+				<if test="lowPrice==null and highPrice!=null">
+					name LIKE '%'||#{productName}||'%' AND price&lt;=#{highPrice} ORDER BY sales desc)oBySalesP)
+				</if>
+				<!-- 查询在价格在某个区间内的 -->
+				<if test="lowPrice!=null and highPrice!=null">
+					name LIKE '%'||#{productName}||'%' AND price&gt;=#{lowPrice} AND price&lt;=#{highPrice} ORDER BY sales desc)oBySalesP) 
+				</if>
+				<!-- 查询价格高于多少的 -->
+				<if test="lowPrice!=null and highPrice==null">
+					name LIKE '%'||#{productName}||'%' AND price&gt;=#{lowPrice} ORDER BY sales desc)oBySalesP) 
+				</if>
+			</trim>
+			WHERE rn&gt;=#{begin} AND rn&lt;=#{end} 
 	</select>
 	<!-- 根据价格区间 查询某商品 的数量-->
 	<select id="queryByPriceRangeCount" resultType="java.lang.Integer">
 	<!-- max（rownum可获得结果集中最大的一行 也就得出结果集的数量） -->
-		select max(rownum) from dangproduct
+		SELECT max(rownum) FROM dangproduct
 			<trim prefix ="where" prefixOverrides="and">
 			<!-- 查询所有 -->
 				<if test="lowPrice==null and highPrice==null">
-					name like '%'||#{productName}||'%'
+					name LIKE '%'||#{productName}||'%'
 				</if>
 				<!-- 查询低于某价格的 -->
 				<if test="lowPrice==null and highPrice!=null">
-					name like '%'||#{productName}||'%' and price&lt;=#{highPrice}
+					name LIKE '%'||#{productName}||'%' AND price &lt;= #{highPrice}
 				</if>
 				<!-- 查询在价格在某个区间内的 -->
 				<if test="lowPrice!=null and highPrice!=null">
-					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice} and price&lt;=#{highPrice}
+					name LIKE '%'||#{productName}||'%' AND price &gt;= #{lowPrice} AND price &lt;= #{highPrice}
 				</if>
 				<!-- 查询价格高于多少的 -->
 				<if test="lowPrice!=null and highPrice==null">
-					name like '%'||#{productName}||'%' and price&gt;=#{lowPrice}
+					name LIKE '%'||#{productName}||'%' AND price &gt;= #{lowPrice}
 				</if>
 			</trim>
 			
 	</select>
 	<!-- 根据商品id查询商品信息 -->
 	<select id="queryById" resultMap="productMap">
-		select 
-		id as pId,name as pName,detials as pDetials,sales,price
-		from dangproduct dp 
-		where dp.id=#{id}
+		SELECT 
+			id AS pId,
+			name AS pName,
+			detials AS pDetials,
+			sales,
+			price
+		FROM 
+			dangproduct dp 
+		WHERE 
+			dp.id = #{id}
 	</select>
 	<!-- 根据商品id查询商品评论 -->
 	<select id="queryCommentByPId" resultMap="productCommentMap">
-		select 
-		comment_pid as commentId1,
-		comment_pid as cpId,
-		Comment_Uid as cuid,
-		dcomment as dcomment,
-		dcomment_Time as commentTime
-		from 
-		dangComment
-		where comment_pid=#{cid}
+		SELECT 
+			comment_pid AS commentId1,
+			comment_pid AS cpId,
+			Comment_Uid AS cuid,
+			dcomment AS dcomment,
+			dcomment_Time AS commentTime
+		FROM 
+			dangComment
+		WHERE 
+			comment_pid = #{cid}
 	</select>
 	<!-- 根据用户id查询商品评论 -->
 	<select id="queryCommentByUId" resultMap="productCommentMap">
-		select 
-		Comment_Uid as commentId1,
-		comment_pid as cpId,
-		Comment_Uid as cuid,
-		dcomment as dcomment,
-		dcomment_Time as commentTime
-		from 
-		dangComment
-		where Comment_Uid=#{id}
+		SELECT 
+			Comment_Uid AS commentId1,
+			comment_pid AS cpId,
+			Comment_Uid AS cuid,
+			dcomment AS dcomment,
+			dcomment_Time AS commentTime
+		FROM 
+			dangComment
+		WHERE 
+			Comment_Uid = #{id}
 	</select>
 	<!-- 根据产品id查询商品图片 -->
 	<select id="queryImgByPId" resultMap="productImgPathMap">
-		select img_id,img_path from product_imgPath where img_id=#{pId}
+		SELECT 
+			img_id,
+			img_path 
+		FROM 
+			product_imgPath 
+		WHERE 
+			img_id = #{pId}
+	</select>
+	<!-- 根据种类名 查询商品ip -->
+	<select id="queryProductsByCategory" resultMap="productMap">
+	SELECT 	
+		id AS pId,
+		name AS pName,
+		detials AS pDetials,
+		sales,
+		price 
+	FROM(
+		SELECT 
+			p.*,rownum rn
+		FROM(
+			SELECT 
+				*
+			FROM pd_category pc
+				join category c ON pc.category_id = c.category_id 
+				join product_imgPath pi ON pid = pi.img_id 
+				join dangproduct dp ON dp.id = pid 
+			WHERE c.category_name = #{categoryName})
+		p)
+	WHERE rn&gt;= #{begin} AND rn&lt;= #{end}
 	</select>
 </mapper>

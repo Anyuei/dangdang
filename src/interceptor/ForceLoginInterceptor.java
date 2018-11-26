@@ -18,8 +18,10 @@ public class ForceLoginInterceptor extends DestoryAndInitInterceptor{
 		System.out.println(usernameLog);
 		System.out.println("拦截器已经运行");
 		if (usernameLog == null) {
+			System.out.println("登录验证不通过，返回登录页面");
 			return "notLogin";//未登录
 		} else {
+			System.out.println("登录验证通过，");
 			ai.invoke();
 			return null;//已经登录
 		}

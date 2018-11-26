@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -13,7 +15,7 @@
 	<style>
 		a {
 			text-decoration: none;
-			color: #666;
+			color: #718f6b;
 			font-weight: 800;
 		}
 		
@@ -23,13 +25,17 @@
 		}
 		
 		#header_container_up {
+			box-shadow:#ff3600 2px -1px 1px 1px;
 			padding-top: 5px;
 			background-color: #ff3600;
 			height: 40px;
 		}
-		
+		#header_container_down {
+			box-shadow: #ff3600 0px 0px 13px 1px;
+			position: relative;
+		}
 		.maxWidth {
-			border-radius:5px 5px 0px 0px ;
+			border-radius: 12px 12px 0px 0px;
 			width: 1200px;
 			margin: 0px auto;
 			background-color: #f9f9f9;
@@ -53,6 +59,7 @@
 			width: 1200px;
 			margin: 0 auto;
 			position: relative;
+			background-color: #fff9;
 		}
 		
 		#main_logo img {
@@ -60,6 +67,7 @@
 			margin-top: 30px;
 			margin-left: 30px;
 			width: 200px;
+			
 		}
 		.input-group{
 			width: 400px;
@@ -72,16 +80,17 @@
 			width: 48px;
 			height: 40px;
 			border: none;
-			background: url("../images/header/head_sprite.png") no-repeat 0 -346px;
+			background: url(${pageContext.request.contextPath}/images/header/head_sprite.png) no-repeat 0 -346px;
 			cursor: pointer;
 			position: absolute;
 		}
-		#navi_container{
+		#navi_container{ 
+			box-shadow:#ff3600 0px 3px 2px 2px;
 			background-color: #ff3600;
-			height: 30px;
-		}
+			height: 30px;                                  
+		}                                                                       
 		.navi{
-			border-radius: 0px 0px 5px 5px;
+			border-radius: 0px 0px 12px 12px;
 			width: 1200px;
 			margin: 0 auto;
 			background-color: #f9f9f9;
@@ -91,36 +100,44 @@
 		.navbar-nav > li > a {
     		padding: 7px 15px;
         }
-	</style>
+	</style>                      
 
-	<body>
+	<body>                 
 		<!--copyright 安云沛 2018/10/15-->
-		<!--头部容器-->
+		<!--头部容器-->                                                 
 		<div id="header_container_up">
 			<!--头部主体-->
 			<div class="maxWidth">
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<div id="homepage_click" class="navbar-form navbar-left">
-					<a href="">当当主页</a>
+					<a href="${pageContext.request.contextPath}/jsp/index.jsp">当当主页</a>
+					
 				</div>
 				
 				<ul class="nav navbar-nav navbar-right">
-						<!--<c:if test="${sessionScope.username!=null}">-->
+						<c:if test="#session.username!=null">
+							<li> 
+								<a>当当书城  欢 迎 您  ${sessionScope.username}！</a>
+							</li>
 							<li> 
 								<a href="${pageContext.request.contextPath}/MyGro?username=${sessionScope.username}" target="_blank">个人信息</a>
 							</li>
 							<li>
 								<a href="${pageContext.request.contextPath}/LogOut" target="_blank">注销</a>
 							</li>
-						<!--</c:if>-->
-						<!--<c:if test="${sessionScope.username==null}">-->
+						</c:if>
+						<c:if test="#session.username==null">
+							<li>
+								<a href="${pageContext.request.contextPath}/jsp/myCart.jsp" target="_blank">我的购物车</a>
+							</li>
 							<li>
 								<a href="${pageContext.request.contextPath}/jsp/login.jsp" target="_blank">欢迎登录</a>
 							</li>
-						<!--</c:if>-->
-						<li>
-							<a href="${pageContext.request.contextPath}/Register.jsp" target="_blank" style="border-radius: 0px 5px 0px 0px;">注册</a>
-						</li>
+							<li>
+							<a href="${pageContext.request.contextPath}/jsp/login.jsp?regist=1" target="_blank" style="border-radius: 0px 5px 0px 0px;">注册</a>
+							</li>
+						</c:if>
+
 				</ul>
 				</div>
 			</div>
@@ -131,7 +148,10 @@
 			<!--头部搜索主体-->
 			<div id="main_logo" class="row">
 				<div class="col-md-4">
+				<a href="${pageContext.request.contextPath}/jsp/index.jsp">
 					<img src="${pageContext.request.contextPath}/images/header/659702143649717114.png">
+				</a>
+					
 				</div>
 				
 				<div class="col-md-8">
@@ -139,9 +159,10 @@
 						<div class="input-group">
 							<input type="text" class="form-control" placeholder="Search for...">
 							<span class="input-group-btn">
-        						<button class="btn btn-default" type="button"></button>
+        					<button class="btn btn-default" type="button"></button>
       						</span>
 						</div>
+						
 					</form>
 				</div>
 			</div>

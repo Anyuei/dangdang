@@ -1,7 +1,12 @@
 package dangdang.beans;
 
 import java.io.Serializable;
-
+/**
+ * Manager.java
+ * @author anyunpei
+ *2018年10月22日上午9:35:54
+ * 管理员bean
+ */
 public class Manager implements Serializable{
 	private String managerId;
 	private String managerName;
